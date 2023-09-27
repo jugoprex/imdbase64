@@ -1,7 +1,7 @@
-from imdbparser import get_child_imdb_id
+from imdbparser import get_child_imdb_id, get_parents_imdb_id
 import tqdm
 
-def getURLList(csv_file):
+def get_url_list(csv_file):
     '''parse csv file, and return a list after simple-processing.'''
     with open(csv_file, 'r', encoding='latin1') as f:
         lines = f.readlines()
@@ -11,7 +11,7 @@ def getURLList(csv_file):
 
 def get_all_unique_imdb_ids(csv_file):
     '''get all unique imdb ids from csv file.'''
-    lines = getURLList(csv_file)
+    lines = get_url_list(csv_file)
     imdb_ids = [line[1] for line in lines]
     print('removing duplicates...')
     #remove duplicates and return an array
@@ -19,20 +19,17 @@ def get_all_unique_imdb_ids(csv_file):
     print('total number of people: ', len(imdb_ids))
     return imdb_ids
 
-csv_file = 'IMDb-Face.csv'
-image_lines = get_all_unique_imdb_ids(csv_file)
-#use tqdm
-print('getting children imdb ids...')
-for parent in tqdm.tqdm(image_lines):
-    children = get_child_imdb_id(parent)
-    if len(children) > 0:
-        #save children to file
-        child = children[0]
-        for child in children:
-            # get sting of comma separated values
-            child = ', '.join(child)
-        print(child)
-        with open('children.csv', 'a') as f:
-            f.write(str(parent) +', '+ str(child) + '\n')
-        f.close()
+
+CSV_FILE = 'imdb-aging.dat'
+image_lines = get_all_unique_imdb_ids(CSV_FILE)
+with open('parents.csv', 'a') as f:
+    f.write('child_imdb_id, parent1_imdb_id, parent2_imdb_id, parent3_imdb_id\n')
+    print('getting parent imdb ids...')
+    for child in tqdm.tqdm(image_lines):
+        parents = get_parents_imdb_id(child)
+        if len(parents) > 0:
+            parents_string = ','.join(parents)
+            print(child, parents_string)
+            f.write(str(child) +', '+ str(parents_string) + '\n')
+f.close()
 
