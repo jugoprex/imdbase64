@@ -1,2 +1,7 @@
 *.jpg
 *.csv
+.venv/*
+bin/*
+lib/*
+share/*
+__pycache__/*
