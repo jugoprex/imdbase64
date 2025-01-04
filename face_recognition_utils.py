@@ -108,7 +108,7 @@ def create_dict(data):
     for _, row in data.iterrows():
         id = row['id']
         image = row['image']
-        kinship = row['kinship']
+        filename = os.path.splitext(image)[0]
         out_file = f'data/images/family_{id}/{image}'
 
         try:
@@ -121,13 +121,15 @@ def create_dict(data):
         if not embeds:
             continue
 
-        key = f'{id}{kinship}'
-        if key in face_encodings:
-            face_encodings[key].extend(embeds)
-            print(f'Added {len(embeds)} faces to key {key}')
+        # make a list of tuples of the form (filename, embedding)
+        embeds = [(filename, embed) for embed in embeds]
+
+        if id in face_encodings:
+            face_encodings[id].extend([embeds])
+            print(f'Added {len(embeds)} faces to key {id} on image {filename}')
         else:
-            face_encodings[key] = embeds
-            print(f'Created key {key} with {len(embeds)} faces')
+            face_encodings[id] = embeds
+            print(f'Created key {id} with {len(embeds)} faces')
     return face_encodings
 
 def check_crop(img, rect):
