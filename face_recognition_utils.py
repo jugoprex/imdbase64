@@ -1,5 +1,6 @@
 import os
 from PIL import Image
+from collections import defaultdict
 import face_recognition
 import pickle
 import numpy as np
@@ -104,9 +105,10 @@ def draw_faces(id, data):
     draw_all_faces(df)
 
 def create_dict(data):
-    face_encodings = {}
+    face_encodings = defaultdict(list)
     for _, row in data.iterrows():
         id = row['id']
+        person_id = row['imdb_id']
         image = row['image']
         filename = os.path.splitext(image)[0]
         out_file = f'data/images/family_{id}/{image}'
@@ -124,12 +126,9 @@ def create_dict(data):
         # make a list of tuples of the form (filename, embedding)
         embeds = [(filename, embed) for embed in embeds]
 
-        if id in face_encodings:
-            face_encodings[id].extend([embeds])
-            print(f'Added {len(embeds)} faces to key {id} on image {filename}')
-        else:
-            face_encodings[id] = embeds
-            print(f'Created key {id} with {len(embeds)} faces')
+        
+        face_encodings[person_id].append(embeds)
+        print(f'Added {len(embeds)} faces to key {person_id} on image {filename}')
     return face_encodings
 
 def check_crop(img, rect):
