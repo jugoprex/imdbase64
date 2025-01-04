@@ -119,15 +119,20 @@ def create_dict(data):
             print(f'Error loading image {out_file}: {e}')
             continue
 
-        embeds = face_recognition.face_encodings(img)
+        # Get face locations and encodings
+        face_locations = face_recognition.face_locations(img)
+        embeds = face_recognition.face_encodings(img, face_locations)
         if not embeds:
             continue
 
         # make a list of tuples of the form (filename, embedding)
-        embeds = [(filename, embed) for embed in embeds]
-
+        out = [{
+            "filename": filename, 
+            "embedding": embed,
+            "bounding": location
+            } for location, embed in zip(face_locations, embeds)]
         
-        face_encodings[person_id].append(embeds)
+        face_encodings[person_id].append(out)
         print(f'Added {len(embeds)} faces to key {person_id} on image {filename}')
     return face_encodings
 

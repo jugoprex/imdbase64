@@ -23,9 +23,7 @@ class person:
         embs = []
         for l in db[self.id]:
             for face in l:
-                filename, e = face
-                _, ee = self.emb
-                distance = face_distance([e], ee)[0]
+                distance = face_distance([face["embedding"]], self.emb["embedding"])[0]
                 if distance <= th:
                    embs.append(face)
         return embs
