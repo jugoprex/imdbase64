@@ -23,14 +23,16 @@ import requests
 import shutil
 
 for index, row in data.iterrows():
-    id = row['id']
     url = row['url']
     image = row['image']
+    person_id = row['imdb_id']
     response = requests.get(url, stream=True)
     
-    if not os.path.exists('data/images/'+'/family_'+id):
-        os.makedirs('data/images/'+'/family_'+id)
+    folder_path = f'data/images/{person_id}'
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
     
-    with open('data/images/'+'/family_'+id+'/'+image, 'wb') as out_file:
+    with open(f'{folder_path}/{image}', 'wb') as out_file:
         shutil.copyfileobj(response.raw, out_file)
+        print(f'Image {image} downloaded for person {person_id}')
     del response
