@@ -5,3 +5,8 @@ bin/*
 lib/*
 share/*
 __pycache__/*
+*.pickle
+*.dat
+*.zip
+*.cfg
+lib*
