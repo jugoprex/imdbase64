@@ -41,19 +41,17 @@ class person:
 # Por cada carpeta
 #    * Buscar alguna foto con un unico embedding
 #    * Ese emb pasa a ser el emb "identificatorio"
+
+def process_person(person_id):
+    per = person(person_id, encodings, 0.6)
+    for e in per.embs:
+        path = f"data/images/{person_id}/{e['filename']}.jpg"
+        print(f"{e['filename']} : {e['bounding']}")
+        img = face_recognition.load_image_file(path)
+        img = check_crop(img, e['bounding'])
+        img.save(f"test/{e['filename']}_crop.jpg")
+
 pickle_file = Path("encodings_dictionary_filenames.pickle")
 encodings = pickle.load(pickle_file.open("rb"))
-test = person("nm2510701", encodings, 0.6)
-for e in test.embs:
-    path = f"data/images/family_27/{e['filename']}.jpg"
-    print(f"{e['filename']} : {e['bounding']}")
-    img = face_recognition.load_image_file(path)
-    img = check_crop(img, e['bounding'])
-    img.save(f"test/{e['filename']}_crop.jpg")
-e = test.emb
-print(f"{e['filename']} : {e['bounding']}") 
-#open img
-path = f"data/images/family_27/{e['filename']}.jpg"
-img = face_recognition.load_image_file(path)
-img = check_crop(img, e['bounding'])
-img.save(f"{e['filename']}_crop.jpg")
+
+process_person("nm4862694")
