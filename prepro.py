@@ -33,7 +33,7 @@ class person:
         for l in db[self.id]:
             if len(l) == 1:
                 return l[0]
-        raise ValueError
+        raise ValueError("No unique embedding found")
 
     def __str__(self):
         return f"{id} : {{ for file_name }}"
@@ -42,16 +42,15 @@ class person:
 #    * Buscar alguna foto con un unico embedding
 #    * Ese emb pasa a ser el emb "identificatorio"
 
-def process_person(person_id):
+def process_person(person_id, encodings):
     per = person(person_id, encodings, 0.6)
     for e in per.embs:
         path = f"data/images/{person_id}/{e['filename']}.jpg"
-        print(f"{e['filename']} : {e['bounding']}")
         img = face_recognition.load_image_file(path)
         img = check_crop(img, e['bounding'])
-        img.save(f"test/{e['filename']}_crop.jpg")
+        # remove jpg extension
+        path = path.split('.')[0]
+        img.save(f"{path}_crop.jpg")
+        print(f"Processed {path}")
 
-pickle_file = Path("encodings_dictionary_filenames.pickle")
-encodings = pickle.load(pickle_file.open("rb"))
 
-process_person("nm4862694")

@@ -1,15 +1,12 @@
-from face_processing import load_data
-from face_recognition_utils import crop_all_faces, create_dict, draw_faces
+from pathlib import Path
 import pickle
+from prepro import process_person
 
-# Load data
-data = load_data('data/unzipped/')
+pickle_file = Path("encodings_dictionary_filenames.pickle")
+encodings = pickle.load(pickle_file.open("rb"))
 
-# Save encodings dictionary
-def save_encodings_dictionary(data):
-    encodings_dictionary = create_dict(data)
-    with open('encodings_dictionary.pickle', 'wb') as handle:
-        pickle.dump(encodings_dictionary, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-# Example usage
-crop_all_faces('27', data, 'encodings_dictionary.pickle')
+for person_id in encodings.keys():
+    try:
+        process_person(person_id, encodings)
+    except ValueError as e:
+        print(f"Error processing {person_id}: " + str(e))
