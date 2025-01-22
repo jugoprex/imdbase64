@@ -2,7 +2,8 @@ import face_recognition
 from face_recognition import face_distance
 from face_recognition_utils import check_crop
 from pathlib import Path
-import pickle
+import shutil
+import os
 
 class person:
     id: str
@@ -52,5 +53,31 @@ def process_person(person_id, encodings):
         path = path.split('.')[0]
         img.save(f"{path}_crop.jpg")
         print(f"Processed {path}")
+
+def sort_images(person_id, data):
+    # agrupar por familia, ejemplo:
+    # F0001
+    # |-- imdbid
+    # |     |- photoid
+
+    try: family_id = get_family_id(person_id, data)
+    except ValueError as e:
+        print(e)
+        return
+    path = Path(f"data/train/{family_id}")
+    if not path.exists():
+        os.makedirs(path, exist_ok=True)
+    path = path / person_id
+    if not path.exists():
+        os.makedirs(path, exist_ok=True)
+    for img in Path(f"data/images/{person_id}").glob("*_crop.jpg"):
+        shutil.copy(img, path / img.name)
+
+def get_family_id(person_id, data):
+    try: 
+        return data.loc[data['imdb_id'] == person_id, 'id'].values[0]
+    except:
+        # raise error
+        raise ValueError(f"Error: {person_id} may have multiple families")
 
 
