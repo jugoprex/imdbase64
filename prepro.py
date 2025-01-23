@@ -54,7 +54,7 @@ def process_person(person_id, encodings):
         img.save(f"{path}_crop.jpg")
         print(f"Processed {path}")
 
-def sort_images(person_id, data):
+def sort_images(person_id, data, type):
     # agrupar por familia, ejemplo:
     # F0001
     # |-- imdbid
@@ -64,7 +64,7 @@ def sort_images(person_id, data):
     except ValueError as e:
         print(e)
         return
-    path = Path(f"data/train/{family_id}")
+    path = Path(f"data/{type}/{family_id}")
     if not path.exists():
         os.makedirs(path, exist_ok=True)
     path = path / person_id
@@ -78,6 +78,6 @@ def get_family_id(person_id, data):
         return data.loc[data['imdb_id'] == person_id, 'id'].values[0]
     except:
         # raise error
-        raise ValueError(f"Error: {person_id} may have multiple families")
+        raise ValueError(f"Error: {person_id}")
 
 
