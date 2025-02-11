@@ -37,13 +37,14 @@ def prepare_for_training():
 def crop_everyone():
     pickle_file = Path("encodings_dictionary_filenames.pickle")
     encodings = pickle.load(pickle_file.open("rb"))
-    for person_id in encodings.keys():
+    for person_id in tqdm(encodings.keys()):
         try:
             process_person(person_id, encodings)
         except ValueError as e:
             print(f"Error processing {person_id}: " + str(e))
 
 def main():
+    crop_everyone()
     prepare_for_training()
 
 

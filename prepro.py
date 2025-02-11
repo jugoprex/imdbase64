@@ -4,6 +4,7 @@ from face_recognition_utils import check_crop
 from pathlib import Path
 import shutil
 import os
+#from tqdm import tqdm
 
 class person:
     id: str
@@ -52,7 +53,7 @@ def process_person(person_id, encodings):
         # remove jpg extension
         path = path.split('.')[0]
         img.save(f"{path}_crop.jpg")
-        print(f"Processed {path}")
+        #print(f"Processed {path}")
 
 def sort_images(person_id, data, type):
     # agrupar por familia, ejemplo:

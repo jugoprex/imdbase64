@@ -72,4 +72,6 @@ def check_crop(img, rect):
     top, right, bottom, left = rect
     rect = (left, top, right, bottom)
     img_pil = Image.fromarray(img)
-    return img_pil.crop(rect)
+    cropped = img_pil.crop(rect)
+    resized = cropped.resize((112, 112))
+    return resized
